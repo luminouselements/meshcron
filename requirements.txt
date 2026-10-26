@@ -1,0 +1,6 @@
+### `requirements.txt`
+
+```text
+requests
+meshtastic
+```
