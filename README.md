@@ -166,4 +166,12 @@ For automated use, it is recommended to use a system scheduler like `cron` (Linu
 
 *   **Logging:** Logs are written to `/logs/mesh_weather.log`.
 *   **Locking:** The script uses a file lock (`/logs/mesh_weather_lock.pid`) to ensure only one instance runs at a time, preventing race conditions.
+
+## Example Output
 ```
+🌦️ Tampa:
+ⓘ Overcast clouds, feels like 76.44°F
+🌡️ 75.65°F
+💧 75%
+🗜️ 1018hPa
+💨 13.8mph ↗️NE
