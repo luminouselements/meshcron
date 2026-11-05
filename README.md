@@ -166,7 +166,6 @@ For automated use, it is recommended to use a system scheduler like `cron` (Linu
 
 *   **Logging:** Logs are written to `/logs/mesh_weather.log`.
 *   **Locking:** The script uses a file lock (`/logs/mesh_weather_lock.pid`) to ensure only one instance runs at a time, preventing race conditions.
-```
 
 ## Example Output
 ```
@@ -178,3 +177,4 @@ For automated use, it is recommended to use a system scheduler like `cron` (Linu
 👁️ 9.5mi
 🌇 1h00m
 🌬️ 8.0mph ↘️SE
+
