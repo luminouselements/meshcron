@@ -117,8 +117,45 @@ def format_weather_message(weather_data, city_name):
         feels_like = main_data['feels_like']
         humidity = main_data['humidity']
         pressure = main_data['pressure']
+        clouds = weather_data['clouds']['all']
+        visibility_meters = weather_data['visibility']
+        sunrise = weather_data['sys']['sunrise']
+        sunset = weather_data['sys']['sunset']
         wind_speed = weather_data['wind']['speed']
         wind_direction = weather_data['wind']['deg']
+
+        current_time = time.time()
+        is_daytime = sunrise <= current_time < sunset
+        day_night_icon = "☀️" if is_daytime else "🌙"
+        next_event = sunset if is_daytime else sunrise
+        if not is_daytime and current_time >= sunset:
+            next_event += 24 * 60 * 60
+        minutes_until_event = max(0, int((next_event - current_time + 59) // 60))
+        hours, minutes = divmod(minutes_until_event, 60)
+        event_icon = "🌇" if is_daytime else "🌅"
+        event_countdown = f"{event_icon} {hours}h{minutes:02d}m"
+
+        if clouds == 0:
+            cloud_text = "☀️ Sunny Skies"
+        elif clouds < 30:
+            cloud_text = f"🌤️ {clouds}%"
+        elif clouds < 70:
+            cloud_text = f"⛅ {clouds}%"
+        else:
+            cloud_text = f"☁️ {clouds}%"
+
+        visibility_miles = visibility_meters / 1609.344
+
+        if wind_speed == 0:
+            wind = "🌬️ Calm"
+        elif wind_speed < 4:
+            wind = f"🍃 Light {wind_speed:.1f}mph"
+        elif wind_speed < 13:
+            wind = f"🌬️ {wind_speed:.1f}mph"
+        elif wind_speed < 25:
+            wind = f"💨 Breezy {wind_speed:.1f}mph"
+        else:
+            wind = f"🌪️ {wind_speed:.1f}mph"
 
         def get_cardinal_direction(degrees):
             # FIXED: Expanded to high-precision 16-point tracking using 22.5-degree divisor
@@ -134,12 +171,14 @@ def format_weather_message(weather_data, city_name):
         wind_direction_text = get_cardinal_direction(wind_direction)
 
         weather_message = (
-            f"🌦️ {city_name}:\n"
-            f"ⓘ {description.capitalize()}, feels like {feels_like}°F\n"
+            f"{day_night_icon} {city_name}:\n"
+            f"ⓘ {cloud_text} {description.capitalize()}, feels like {feels_like}°F\n"
             f"🌡️ {temp}°F\n"
             f"💧 {humidity}%\n"
             f"🗜️ {pressure}hPa\n"
-            f"💨 {wind_speed}mph {wind_direction_text}"
+            f"👁️ {visibility_miles:.1f}mi\n"
+            f"{event_countdown}\n"
+            f"{wind} {wind_direction_text}"
         )
 
         safe_message = weather_message[:200]
