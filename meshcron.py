@@ -126,7 +126,7 @@ def format_weather_message(weather_data, city_name):
 
         current_time = time.time()
         is_daytime = sunrise <= current_time < sunset
-        day_night_icon = "☀️" if is_daytime else "🌙"
+        day_night_icon = "🌞" if is_daytime else "🌜"
         next_event = sunset if is_daytime else sunrise
         if not is_daytime and current_time >= sunset:
             next_event += 24 * 60 * 60
@@ -136,7 +136,7 @@ def format_weather_message(weather_data, city_name):
         event_countdown = f"{event_icon} {hours}h{minutes:02d}m"
 
         if clouds == 0:
-            cloud_text = "☀️ Sunny Skies"
+            cloud_text = "☀️ Sunny" if is_daytime else "🌙 "
         elif clouds < 30:
             cloud_text = f"🌤️ {clouds}%"
         elif clouds < 70:
@@ -172,7 +172,7 @@ def format_weather_message(weather_data, city_name):
 
         weather_message = (
             f"{day_night_icon} {city_name}:\n"
-            f"ⓘ {cloud_text} {description.capitalize()}, feels like {feels_like}°F\n"
+            f"ⓘ {cloud_text} {description}, feels like {feels_like}°F\n"
             f"🌡️ {temp}°F\n"
             f"💧 {humidity}%\n"
             f"🗜️ {pressure}hPa\n"
@@ -192,7 +192,7 @@ def format_weather_message(weather_data, city_name):
 def main():
     parser = argparse.ArgumentParser(description="Send localized OpenWeatherMap data to a Meshtastic Node.")
     parser.add_argument("--node", type=str, default="192.168.50.49", help="IP address of the Meshtastic Node")
-    parser.add_argument("--api_key", type=str, default="", help="OpenWeatherMap API Key")
+    parser.add_argument("--api_key", type=str, default="OpenWeatherMap API Key", help="OpenWeatherMap API Key")
     parser.add_argument("--channel", type=int, default=5, help="Meshtastic channel index to broadcast on")
     parser.add_argument("--city", type=str, default="Tampa", help="Target city for weather tracking")
     args = parser.parse_args()
