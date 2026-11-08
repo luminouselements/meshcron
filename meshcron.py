@@ -210,7 +210,7 @@ def format_weather_message(weather_data, city_name):
 def main():
     parser = argparse.ArgumentParser(description="Send localized OpenWeatherMap data to a Meshtastic Node.")
     parser.add_argument("--node", type=str, default="192.168.50.49", help="IP address of the Meshtastic Node")
-    parser.add_argument("--api_key", type=str, default="657a00d5432de53b195e03853240e2e9", help="OpenWeatherMap API Key")
+    parser.add_argument("--api_key", type=str, default="OpenWeatherMap API Key", help="OpenWeatherMap API Key")
     parser.add_argument("--channel", type=int, default=5, help="Meshtastic channel index to broadcast on")
     parser.add_argument("--city", type=str, default="Tampa", help="Target city for weather tracking")
     args = parser.parse_args()
