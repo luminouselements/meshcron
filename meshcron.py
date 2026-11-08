@@ -111,10 +111,14 @@ def get_weather_data(city, api_key):
 def format_weather_message(weather_data, city_name):
     try:
         # Secure structure parsing for array objects inside dictionary keys
-        description = weather_data['weather'][0]['description']
+        weather_condition = weather_data['weather'][0]
+        description = weather_condition['description']
+        condition_id = weather_condition.get('id')
         main_data = weather_data['main']
         temp = main_data['temp']
         feels_like = main_data['feels_like']
+        temp_min = main_data.get('temp_min')
+        temp_max = main_data.get('temp_max')
         humidity = main_data['humidity']
         pressure = main_data['pressure']
         clouds = weather_data['clouds']['all']
@@ -136,13 +140,23 @@ def format_weather_message(weather_data, city_name):
         event_countdown = f"{event_icon} {hours}h{minutes:02d}m"
 
         if clouds == 0:
-            cloud_text = "☀️ Sunny" if is_daytime else "🌙 "
+            cloud_text = "☀️ Sunny" if is_daytime else "🌙 Serene"
         elif clouds < 30:
             cloud_text = f"🌤️ {clouds}%"
         elif clouds < 70:
             cloud_text = f"⛅ {clouds}%"
         else:
             cloud_text = f"☁️ {clouds}%"
+
+        condition_icons = {
+            2: "⛈️",
+            3: "🌦️",
+            5: "🌧️",
+            6: "🌨️",
+        }
+        condition_group = condition_id // 100 if isinstance(condition_id, int) else None
+        if condition_group in condition_icons:
+            cloud_text = f"{condition_icons[condition_group]} {clouds}%"
 
         visibility_miles = visibility_meters / 1609.344
 
@@ -170,10 +184,14 @@ def format_weather_message(weather_data, city_name):
 
         wind_direction_text = get_cardinal_direction(wind_direction)
 
+        temperature_range = ""
+        if temp_min is not None and temp_max is not None:
+            temperature_range = f"{temp_min:.0f}°/{temp_max:.0f}°F"
+
         weather_message = (
             f"{day_night_icon} {city_name}:\n"
             f"ⓘ {cloud_text} {description}, feels like {feels_like}°F\n"
-            f"🌡️ {temp}°F\n"
+            f"🌡️ {temp}°F ({temperature_range})\n"
             f"💧 {humidity}%\n"
             f"🗜️ {pressure}hPa\n"
             f"👁️ {visibility_miles:.1f}mi\n"
@@ -192,7 +210,7 @@ def format_weather_message(weather_data, city_name):
 def main():
     parser = argparse.ArgumentParser(description="Send localized OpenWeatherMap data to a Meshtastic Node.")
     parser.add_argument("--node", type=str, default="192.168.50.49", help="IP address of the Meshtastic Node")
-    parser.add_argument("--api_key", type=str, default="OpenWeatherMap API Key", help="OpenWeatherMap API Key")
+    parser.add_argument("--api_key", type=str, default="657a00d5432de53b195e03853240e2e9", help="OpenWeatherMap API Key")
     parser.add_argument("--channel", type=int, default=5, help="Meshtastic channel index to broadcast on")
     parser.add_argument("--city", type=str, default="Tampa", help="Target city for weather tracking")
     args = parser.parse_args()

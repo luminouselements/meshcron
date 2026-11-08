@@ -2,6 +2,29 @@
 
 This script fetches current weather data from OpenWeatherMap and publishes a formatted message over a Meshtastic mesh network via a local node.
 
+## Weather Message
+
+The message includes current conditions, cloud coverage, temperature, humidity,
+pressure, visibility, sunrise/sunset countdown, and wind. Thunderstorm, drizzle,
+rain, and snow conditions use condition-specific icons when the API reports a
+matching weather code; other conditions use the cloud-cover icon.
+
+The displayed `Low` and `High` come from OpenWeatherMap's current-conditions
+`main.temp_min` and `main.temp_max` fields. They are not a daily forecast.
+
+Example:
+
+```text
+🌞 Tampa:
+ⓘ ⛈️ 85% thunderstorm with light rain, feels like 86°F
+🌡️ 83°F (Low 76°/ High 88°F)
+💧 78%
+🗜️ 1012hPa
+👁️ 6.2mi
+🌇 0h17m
+🌬️ 8.0mph ➡️E
+```
+
 ## Prerequisites
 
 Before running this script, ensure you have the following:
@@ -166,15 +189,4 @@ For automated use, it is recommended to use a system scheduler like `cron` (Linu
 
 *   **Logging:** Logs are written to `/logs/mesh_weather.log`.
 *   **Locking:** The script uses a file lock (`/logs/mesh_weather_lock.pid`) to ensure only one instance runs at a time, preventing race conditions.
-
-## Example Output
 ```
-☀️ Tampa:
-ⓘ ⛅ 40%, Partly cloudy, feels like 70°F
-🌡️ 72°F
-💧 60%
-🗜️ 1012hPa
-👁️ 9.5mi
-🌇 1h00m
-🌬️ 8.0mph ↘️SE
-
